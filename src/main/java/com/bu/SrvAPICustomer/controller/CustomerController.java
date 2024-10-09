@@ -3,6 +3,7 @@ package com.bu.SrvAPICustomer.controller;
 
 import javax.validation.Valid;
 
+import com.bu.SrvAPICustomer.model.DTO.CustomerResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +27,19 @@ public class CustomerController {
 	}
 	
 	@PostMapping("/guardarCliente")
-    public ResponseEntity<Customer> createCustomer(@Valid @RequestBody Customer customer) {
-        Customer newCustomer = iCustomerService.save(customer);
-        return new ResponseEntity<>(newCustomer, HttpStatus.CREATED);
+    public ResponseEntity<CustomerResponseDTO> createCustomer(@Valid @RequestBody Customer customer) {
+		if(iCustomerService.findCustomerById(customer.getNumeroDocumento()) != null)
+		{
+			String mensaje = iCustomerService.getDuplicatedCustomer(customer);
+			CustomerResponseDTO response = new CustomerResponseDTO(customer.getIdTx(), mensaje);
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+
+		}else{
+			Customer newCustomer = iCustomerService.save(customer);
+			String mensaje = iCustomerService.getSuccessMessage(newCustomer);
+			CustomerResponseDTO response = new CustomerResponseDTO(customer.getIdTx(), mensaje);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}
     }
 
 }

@@ -21,7 +21,7 @@ public class Customer {
     
     @Id
     @Column(name = "numeroDocumento", unique = true, nullable = false)
-    @NotNull(message = "El número de documento es obligatorio")
+    @NotBlank(message = "El número de documento es obligatorio")
     private String numeroDocumento;
 
     @NotBlank(message = "El primer nombre es obligatorio")
@@ -38,7 +38,7 @@ public class Customer {
     private Integer telefono;
 
     @NotBlank(message = "El correo electrónico es obligatorio")
-    @Email(message = "El formato del correo electrónico no es válido")
+    @Email(message = "Campo 'correElectronico', no cumple con la estructura de un correo electrónico valido.")
     private String correoElectronico;
 
 }
