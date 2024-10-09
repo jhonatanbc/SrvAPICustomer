@@ -20,28 +20,9 @@ public class CustomerServiceImpl implements ICustomerService{
 	}
 
 	@Override
-	public String getSuccessMessage(Customer customer) {
-		return String.format("Cliente %s almacenado de forma exitosa.", customer.getNumeroDocumento());
-	}
-
-	@Override
 	public Customer findByTipoDocumentoAndNumeroDocumento(String tipoDocumento, String numeroDocumento) {
 		Optional<Customer> customerOptional = iCustomerRepository.findByTipoDocumentoAndNumeroDocumento(tipoDocumento,numeroDocumento);
 		return customerOptional.orElse(null) ;
-	}
-	@Override
-	public String getDuplicatedCustomer(Customer customer) {
-		return String.format("Cliente %s %s. Ya se encuentra registrado.", customer.getTipoDocumento(), customer.getNumeroDocumento());
-	}
-
-	@Override
-	public String getSuccessUpdateMessage(Customer customer) {
-		return String.format("Cliente %s actualizado de forma exitosa.", customer.getNumeroDocumento());
-	}
-
-	@Override
-	public String NotFoundCustomerMessage(Customer customer) {
-		return String.format("Cliente %s %s. No se encuentra registrado.", customer.getTipoDocumento(), customer.getNumeroDocumento());
 	}
 
 	@Override
@@ -50,5 +31,4 @@ public class CustomerServiceImpl implements ICustomerService{
 		customer.setIdTx(customerFound.getIdTx());
 		return iCustomerRepository.save(customer);
 	}
-
 }

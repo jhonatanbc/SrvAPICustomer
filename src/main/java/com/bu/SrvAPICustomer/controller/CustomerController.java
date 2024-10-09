@@ -4,6 +4,7 @@ package com.bu.SrvAPICustomer.controller;
 import javax.validation.Valid;
 
 import com.bu.SrvAPICustomer.model.DTO.CustomerResponseDTO;
+import com.bu.SrvAPICustomer.util.MessagesUtil;
 import com.bu.SrvAPICustomer.util.PathVariables;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +24,10 @@ public class CustomerController {
 	@Autowired
 	ICustomerService iCustomerService;
 	private final ObjectMapper objectMapper;
-	public CustomerController(ObjectMapper objectMapper) {
+	protected MessagesUtil messagesUtil;
+	public CustomerController(ObjectMapper objectMapper, MessagesUtil messaggesUtil) {
 		this.objectMapper = objectMapper;
+		this.messagesUtil = messaggesUtil;
 	}
 
 	@GetMapping("/consultarCliente/{identifier}")
@@ -56,13 +59,13 @@ public class CustomerController {
 			log.info("idTx:"+customer.getIdTx()+" - Request Body: {}", objectMapper.writeValueAsString(customer));
 			if(iCustomerService.findByTipoDocumentoAndNumeroDocumento(customer.getTipoDocumento(),customer.getNumeroDocumento()) != null)
 			{
-				String mensaje = iCustomerService.getDuplicatedCustomer(customer);
+				String mensaje = messagesUtil.getDuplicatedCustomer(customer);
 				CustomerResponseDTO response = new CustomerResponseDTO(customer.getIdTx(), mensaje);
 				log.info("idTx:"+customer.getIdTx()+" - Response Body: {}", objectMapper.writeValueAsString(response));
 				return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 			}else{
 				Customer newCustomer = iCustomerService.save(customer);
-				String mensaje = iCustomerService.getSuccessMessage(newCustomer);
+				String mensaje = messagesUtil.getSuccessMessage(newCustomer);
 				CustomerResponseDTO response = new CustomerResponseDTO(customer.getIdTx(), mensaje);
 				log.info("idTx:"+customer.getIdTx()+" - Response Body: {}", objectMapper.writeValueAsString(response));
 				return new ResponseEntity<>(response, HttpStatus.OK);
@@ -80,14 +83,14 @@ public class CustomerController {
 			log.info("idTx:"+customer.getIdTx()+" - Request Body: {}", objectMapper.writeValueAsString(customer));
 			if(iCustomerService.findByTipoDocumentoAndNumeroDocumento(customer.getTipoDocumento(),customer.getNumeroDocumento()) == null)
 			{
-				String mensaje = iCustomerService.NotFoundCustomerMessage(customer);
+				String mensaje = messagesUtil.NotFoundCustomerMessage(customer);
 				CustomerResponseDTO response = new CustomerResponseDTO(customer.getIdTx(), mensaje);
 				log.info("idTx:"+customer.getIdTx()+" - Response Body: {}", objectMapper.writeValueAsString(response));
 				return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 
 			}else{
 				Customer newCustomer = iCustomerService.updateCustomer(customer);
-				String mensaje = iCustomerService.getSuccessUpdateMessage(newCustomer);
+				String mensaje = messagesUtil.getSuccessUpdateMessage(newCustomer);
 				CustomerResponseDTO response = new CustomerResponseDTO(customer.getIdTx(), mensaje);
 				log.info("idTx:"+customer.getIdTx()+" - Response Body: {}", objectMapper.writeValueAsString(response));
 				return new ResponseEntity<>(response, HttpStatus.OK);
