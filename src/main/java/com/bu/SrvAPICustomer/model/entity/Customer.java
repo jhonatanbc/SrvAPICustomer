@@ -1,26 +1,29 @@
 package com.bu.SrvAPICustomer.model.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import javax.validation.constraints.*;
-import javax.persistence.Id;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
+@Table(name = "customers", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"tipoDocumento", "numeroDocumento"})
+})
 @Getter
 @Setter
+
 public class Customer {
-	
+    @Id
 	@NotBlank(message = "El campo 'idTx' es obligatorio")
     private String idTx;
 
+    @Column(name = "tipoDocumento", nullable = false)
     @NotBlank(message = "El tipo de documento es obligatorio")
     private String tipoDocumento;
     
-    @Id
-    @Column(name = "numeroDocumento", unique = true, nullable = false)
+
+    @Column(name = "numeroDocumento", nullable = false)
     @NotBlank(message = "El número de documento es obligatorio")
     private String numeroDocumento;
 
